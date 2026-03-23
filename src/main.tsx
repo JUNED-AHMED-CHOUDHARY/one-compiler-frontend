@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
-
+import './index.css' // <-- Add this line to import Tailwind
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
 
