@@ -43,7 +43,7 @@ function Index() {
       if (status === 'completed' || status === 'failed') {
         return false // Stop polling
       }
-      return 1000 // Poll every 1s
+      return 500 // Poll every .5s
     },
   })
 
@@ -84,7 +84,7 @@ function Index() {
           <div className="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center font-bold text-xl">
             /
           </div>
-          <h1 className="text-xl font-semibold tracking-tight">OneCompiler</h1>
+          <h1 className="text-xl font-semibold tracking-tight">JJ Compiler</h1>
         </div>
 
         <div className="flex items-center gap-4">
