@@ -32,6 +32,7 @@ export function TerminalOutput({
       },
       fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
       fontSize: 14,
+      scrollback: 200_000,
       disableStdin: true, // Read-only for now
       convertEol: true, // Treat \n as new lines properly
     })
@@ -71,10 +72,15 @@ export function TerminalOutput({
         term.writeln('\x1b[33m\u23F3 Execution queued...\x1b[0m') // Yellow
       }
     } else if (status === 'completed' && output) {
-      term.write(output) // Write actual standard output
-      term.writeln('\n\x1b[32m\n\u2714 Execution finished.\x1b[0m') // Green success
+      term.write(output, () => {
+        term.writeln('\n\x1b[32m\n\u2714 Execution finished.\x1b[0m') // Green success
+        term.scrollToTop()
+      })
+    } else if (status === 'completed') {
+      term.writeln('\x1b[32m\u2714 Execution finished.\x1b[0m')
     } else if (status === 'failed') {
       term.write(`\x1b[31m${error || 'Execution failed'}\x1b[0m`) // Red error
+      term.scrollToTop()
     }
   }, [status, pendingPhase, output, error])
 
