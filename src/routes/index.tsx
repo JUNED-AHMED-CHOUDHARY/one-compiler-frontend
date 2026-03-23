@@ -3,6 +3,7 @@ import Editor from '@monaco-editor/react'
 import { useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { submitCode, checkJobStatus } from '../api/compilerApi'
+import { TerminalOutput } from '../components/programming/TerminalOutput'
 
 export const Route = createFileRoute('/')({
   component: Index,
@@ -62,29 +63,18 @@ function Index() {
     runCodeMutation.mutate()
   }
 
-  // Determine what to show in the output console
-  const renderOutput = () => {
-    if (runCodeMutation.isPending) {
-      return <p className="text-blue-400">Submitting code to server...</p>
-    }
-    if (!currentJobId) {
-      return <p className="text-zinc-500 italic">Click "Run" to see the output here...</p>
-    }
-    if (jobStatus?.status === 'completed') {
-      return <pre className="text-emerald-400 whitespace-pre-wrap">{jobStatus.output}</pre>
-    }
-    if (jobStatus?.status === 'failed' || isError) {
-      return (
-        <pre className="text-red-400 whitespace-pre-wrap">
-          {jobStatus?.error || 'Execution failed'}
-        </pre>
-      )
-    }
-    if (jobStatus?.status === 'active') {
-      return <p className="text-yellow-400 animate-pulse">Executing in secure container...</p>
-    } else {
-      return <p className="text-yellow-400 animate-pulse">Execution Queued...</p>
-    }
+  const isFinished = jobStatus?.status === 'completed' || jobStatus?.status === 'failed'
+  const isJobInProgress = Boolean(currentJobId) && !isFinished
+  const pendingPhase: 'running' | 'queued' = jobStatus?.status === 'active' ? 'running' : 'queued'
+
+  // Derive the current status to pass to our terminal
+  let terminalStatus: 'idle' | 'pending' | 'completed' | 'failed' = 'idle'
+  if (runCodeMutation.isPending || isJobInProgress) {
+    terminalStatus = 'pending'
+  } else if (jobStatus?.status === 'completed') {
+    terminalStatus = 'completed'
+  } else if (jobStatus?.status === 'failed' || runCodeMutation.isError || isError) {
+    terminalStatus = 'failed'
   }
 
   return (
@@ -110,7 +100,7 @@ function Index() {
 
           <button
             onClick={handleRunClick}
-            disabled={runCodeMutation.isPending || !!jobStatus?.status}
+            disabled={runCodeMutation.isPending || isJobInProgress}
             className="flex items-center gap-2 px-5 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-800 disabled:cursor-not-allowed text-white text-sm font-medium rounded-md transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
           >
             <svg
@@ -125,7 +115,7 @@ function Index() {
                 clipRule="evenodd"
               />
             </svg>
-            {runCodeMutation.isPending || !!jobStatus?.status ? 'Running...' : 'Run'}
+            {runCodeMutation.isPending || isJobInProgress ? 'Running...' : 'Run'}
           </button>
         </div>
       </header>
@@ -142,13 +132,21 @@ function Index() {
           />
         </section>
 
+        {/* REPLACED THE MIDDLE DIV WITH OUR NEW TERMINAL */}
         <section className="h-1/3 lg:h-full lg:w-1/3 bg-zinc-950 flex flex-col">
           <div className="px-4 py-2 bg-zinc-900 border-b border-zinc-800 flex items-center">
             <h2 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
               Output / Console
             </h2>
           </div>
-          <div className="flex-grow p-4 font-mono text-sm overflow-y-auto">{renderOutput()}</div>
+          <div className="flex-grow p-4 overflow-hidden relative">
+            <TerminalOutput
+              status={terminalStatus}
+              pendingPhase={pendingPhase}
+              output={jobStatus?.output}
+              error={jobStatus?.error}
+            />
+          </div>
         </section>
       </main>
     </div>
