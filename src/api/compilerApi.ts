@@ -22,9 +22,14 @@ export interface StatusResponse {
   error?: string
 }
 
-export const submitCode = async (language: string, code: string): Promise<RunResponse> => {
-  // Assuming your backend expects { language, code }
-  const response = await apiClient.post('/code/run', { language, code })
+// UPDATE: Added stdin parameter
+export const submitCode = async (
+  language: string,
+  code: string,
+  stdin: string = '',
+): Promise<RunResponse> => {
+  // Send stdin along with language and code
+  const response = await apiClient.post('/code/run', { language, code, stdin })
   return response.data
 }
 
