@@ -1,6 +1,5 @@
-import * as React from 'react'
 import { Outlet, createRootRoute } from '@tanstack/react-router'
-import { Toaster } from 'sonner'
+import { AppToaster } from '@/components/theme/app-toaster'
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -8,9 +7,9 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   return (
-    <React.Fragment>
+    <>
       <Outlet />
-      <Toaster richColors position="top-right" theme="dark" />
-    </React.Fragment>
+      <AppToaster />
+    </>
   )
 }
