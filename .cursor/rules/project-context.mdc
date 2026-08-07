@@ -1,0 +1,25 @@
+---
+description: Shared project source of truth and workflow
+alwaysApply: true
+---
+
+# Project Context
+
+For this product, treat the frontend and backend as one system.
+
+- PRD:
+  https://docs.google.com/document/d/1eJEUPDaZwN-Utl38A7dNG7RVzGPkdbWJXcGEezei99A/edit?usp=sharing
+- PRD text export:
+  https://docs.google.com/document/d/1eJEUPDaZwN-Utl38A7dNG7RVzGPkdbWJXcGEezei99A/export?format=txt
+- Backend repo:
+  https://github.com/JUNED-AHMED-CHOUDHARY/one-compiler-backend
+- Frontend repo:
+  https://github.com/JUNED-AHMED-CHOUDHARY/one-compiler-frontend
+
+Before implementing or reviewing requirement-related work:
+
+- Check the latest PRD if access is available.
+- Use GitHub PRs, branches, commits, and issues to verify what has already been built.
+- Keep frontend and backend API contracts aligned.
+- If PRD access or GitHub access is unavailable, say that clearly before making assumptions.
+- Keep answers aligned with the current active PR/branch and project status.
