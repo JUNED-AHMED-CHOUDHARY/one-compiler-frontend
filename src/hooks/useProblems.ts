@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
-import { fetchProblems } from '@/api/problemsApi'
+import { fetchProblems, type FetchProblemsParams } from '@/api/problemsApi'
 import { problemKeys } from '@/lib/queryKeys'
 
-export function useProblems() {
+export function useProblems(params: FetchProblemsParams = {}) {
   return useQuery({
-    queryKey: problemKeys.list(),
-    queryFn: fetchProblems,
+    queryKey: problemKeys.list(params),
+    queryFn: () => fetchProblems(params),
   })
 }

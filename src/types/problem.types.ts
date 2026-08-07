@@ -51,11 +51,36 @@ export type ProblemCodeTemplate = {
   user_visible_code: string
 }
 
-/** Shape expected from future GET /problems (PUBLISHED rows). */
+/** Lean list DTO — matches GET /problems/list `problems[]` (table + filters only). */
 export type ProblemListItem = {
   id: string
   problem_name: string
   problem_slug_name: string
+  difficulty: ProblemDifficulty
+  total_submissions: number
+  total_accepted: number
+  tag_links: ProblemTagLink[]
+}
+
+export type ProblemsListPagination = {
+  page: number
+  limit: number
+  total: number
+  totalPages: number
+  hasMore: boolean
+}
+
+export type ProblemsListResponse = {
+  problems: ProblemListItem[]
+  pagination: ProblemsListPagination
+}
+
+/** Detail DTO for solve page (future GET /problems/:slug). */
+export type ProblemDetail = {
+  id: string
+  problem_name: string
+  problem_slug_name: string
+  problem_description: string | null
   difficulty: ProblemDifficulty
   status: ProblemStatus
   time_limit_ms: number
@@ -64,11 +89,6 @@ export type ProblemListItem = {
   total_accepted: number
   evaluation_type: EvaluationType
   tag_links: ProblemTagLink[]
-}
-
-/** Shape expected from future GET /problems/:slug. */
-export type ProblemDetail = ProblemListItem & {
-  problem_description: string | null
-  code_templates: ProblemCodeTemplate[]
   company_links: ProblemCompanyLink[]
+  code_templates: ProblemCodeTemplate[]
 }

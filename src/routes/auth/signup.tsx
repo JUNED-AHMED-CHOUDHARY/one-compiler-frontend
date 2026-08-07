@@ -1,7 +1,13 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, redirect } from '@tanstack/react-router'
 import SignUpForm from '@/components/auth/SignUp'
+import { isAuthenticated } from '@/lib/auth'
 
-export const Route = createFileRoute('/signup')({
+export const Route = createFileRoute('/auth/signup')({
+  beforeLoad: () => {
+    if (isAuthenticated()) {
+      throw redirect({ to: '/' })
+    }
+  },
   component: SignupPage,
 })
 
@@ -12,7 +18,7 @@ function SignupPage() {
         <section className="grid w-full overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900 shadow-2xl shadow-emerald-950/20 md:grid-cols-2">
           <div className="hidden flex-col justify-between bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-500 p-10 md:flex">
             <Link
-              to="/"
+              to="/playground"
               className="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-50"
             >
               JJ Compiler
@@ -32,8 +38,8 @@ function SignupPage() {
           </div>
 
           <div className="p-6 sm:p-10">
-            <Link to="/" className="text-sm font-medium text-zinc-400 hover:text-white">
-              Back to compiler
+            <Link to="/playground" className="text-sm font-medium text-zinc-400 hover:text-white">
+              Back to playground
             </Link>
 
             <div className="mt-10">
@@ -49,7 +55,10 @@ function SignupPage() {
 
             <p className="mt-8 text-center text-sm text-zinc-400">
               Already have an account?{' '}
-              <Link to="/login" className="font-semibold text-emerald-400 hover:text-emerald-300">
+              <Link
+                to="/auth/login"
+                className="font-semibold text-emerald-400 hover:text-emerald-300"
+              >
                 Login
               </Link>
             </p>
