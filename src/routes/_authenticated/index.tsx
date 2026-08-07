@@ -4,13 +4,15 @@ import { StatePanel } from '@/components/feedback/StatePanel'
 import { AppShell } from '@/components/layout/AppShell'
 import { ProblemsTable, ProblemsTableSkeleton } from '@/components/problems/ProblemsTable'
 import { useProblems } from '@/hooks/useProblems'
+import { getApiErrorMessage } from '@/lib/getApiErrorMessage'
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute('/_authenticated/')({
   component: ProblemsHome,
 })
 
 function ProblemsHome() {
-  const { data: problems, isLoading, isError, error } = useProblems()
+  const { data, isLoading, isError, error } = useProblems()
+  const problems = data?.problems ?? []
 
   return (
     <AppShell>
@@ -28,12 +30,12 @@ function ProblemsHome() {
           <StatePanel
             icon={AlertCircle}
             title="Could not load problems"
-            description={error instanceof Error ? error.message : 'Something went wrong.'}
+            description={getApiErrorMessage(error)}
             className="border"
           />
         ) : null}
 
-        {!isLoading && !isError && problems?.length === 0 ? (
+        {!isLoading && !isError && problems.length === 0 ? (
           <StatePanel
             icon={Inbox}
             title="No published problems"
@@ -42,7 +44,7 @@ function ProblemsHome() {
           />
         ) : null}
 
-        {!isLoading && !isError && problems && problems.length > 0 ? (
+        {!isLoading && !isError && problems.length > 0 ? (
           <ProblemsTable problems={problems} />
         ) : null}
       </main>

@@ -16,7 +16,8 @@ import { Input } from '@/components/ui/input'
 import { Password } from '@/components/ui/password'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
-import { signupApi, type AuthApiResponse } from '@/api/authApi'
+import type { ApiResponse } from '@/api/apiClient'
+import { signupApi } from '@/api/authApi'
 
 export function SignUpForm() {
   const navigate = useNavigate()
@@ -41,7 +42,7 @@ export function SignUpForm() {
     },
   })
 
-  const setBackendErrors = (response?: AuthApiResponse) => {
+  const setBackendErrors = (response?: ApiResponse) => {
     const formValues = getValues()
 
     response?.additionalInfo?.errors?.forEach(({ path, message }) => {
@@ -72,9 +73,9 @@ export function SignUpForm() {
 
       toast.success(response.message || 'Account created successfully')
       reset()
-      await navigate({ to: '/login' })
+      await navigate({ to: '/auth/login' })
     } catch (error) {
-      const errorResponse = axios.isAxiosError<AuthApiResponse>(error)
+      const errorResponse = axios.isAxiosError<ApiResponse>(error)
         ? error.response?.data
         : undefined
 

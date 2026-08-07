@@ -1,9 +1,8 @@
-import type { ProblemDetail, ProblemListItem } from '@/types/problem.types'
+import type { ProblemDetail } from '@/types/problem.types'
 
 /**
- * Seeded from production Postgres via Mushroom MCP (environment: production).
- * Source row: Problems.id = prb_ht1JBOeXf
- * TopicTags / junctions were empty at sync time.
+ * Temporary detail mock until GET /problems/:slug lands.
+ * List data now comes from GET /problems/list.
  */
 export const MOCK_PROBLEMS: ProblemDetail[] = [
   {
@@ -34,19 +33,3 @@ export const MOCK_PROBLEMS: ProblemDetail[] = [
     ],
   },
 ]
-
-export function toListItem(problem: ProblemDetail): ProblemListItem {
-  return {
-    id: problem.id,
-    problem_name: problem.problem_name,
-    problem_slug_name: problem.problem_slug_name,
-    difficulty: problem.difficulty,
-    status: problem.status,
-    time_limit_ms: problem.time_limit_ms,
-    memory_limit_kb: problem.memory_limit_kb,
-    total_submissions: problem.total_submissions,
-    total_accepted: problem.total_accepted,
-    evaluation_type: problem.evaluation_type,
-    tag_links: problem.tag_links,
-  }
-}

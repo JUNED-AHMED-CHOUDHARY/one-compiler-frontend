@@ -8,15 +8,16 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useProblemBySlug } from '@/hooks/useProblemBySlug'
 import { useProblemEditor } from '@/hooks/useProblemEditor'
+import { getApiErrorMessage } from '@/lib/getApiErrorMessage'
+import type { ProblemDetail } from '@/types/problem.types'
 
-export const Route = createFileRoute('/problems/$slug')({
+export const Route = createFileRoute('/_authenticated/problems/$slug')({
   component: ProblemSolvePage,
 })
 
 function ProblemSolvePage() {
   const { slug } = Route.useParams()
   const { data: problem, isLoading, isError, error, isFetched } = useProblemBySlug(slug)
-  const editor = useProblemEditor(problem?.code_templates, problem?.id)
 
   if (isLoading) {
     return (
@@ -36,7 +37,7 @@ function ProblemSolvePage() {
           <StatePanel
             icon={AlertCircle}
             title="Failed to load problem"
-            description={error instanceof Error ? error.message : 'Something went wrong.'}
+            description={getApiErrorMessage(error)}
             action={
               <Button asChild variant="outline" size="sm">
                 <Link to="/">Back to problems</Link>
@@ -68,6 +69,12 @@ function ProblemSolvePage() {
   }
 
   if (!problem) return null
+
+  return <ProblemWorkspace key={problem.id} problem={problem} />
+}
+
+function ProblemWorkspace({ problem }: { problem: ProblemDetail }) {
+  const editor = useProblemEditor(problem.code_templates)
 
   return (
     <AppShell variant="workspace" subtitle={problem.problem_name}>

@@ -72,10 +72,11 @@ const COLUMNS: Column[] = [
 ]
 
 const SKELETON_CELLS = [
-  { className: 'h-4 w-6' },
-  { className: 'h-4 w-44' },
-  { className: 'ml-auto hidden h-4 w-16 sm:block' },
-  { className: 'hidden h-4 w-14 md:block' },
+  { className: 'h-4 w-6 shrink-0' },
+  { className: 'h-4 w-44 shrink-0' },
+  { className: 'hidden h-4 w-16 shrink-0 sm:block' },
+  { className: 'h-4 w-14 shrink-0' },
+  { className: 'hidden h-4 w-24 shrink-0 md:block' },
 ]
 
 type ProblemsTableProps = {

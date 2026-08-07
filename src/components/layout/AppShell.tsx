@@ -17,7 +17,7 @@ export function AppShell({ children, subtitle, variant = 'page', className }: Ap
         className,
       )}
     >
-      <AppHeader subtitle={subtitle} />
+      <AppHeader subtitle={subtitle} fullWidth={variant === 'workspace'} />
       <div className={cn(variant === 'workspace' && 'flex min-h-0 flex-1 flex-col')}>
         {children}
       </div>

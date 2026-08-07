@@ -1,28 +1,22 @@
-import axios from 'axios'
+import { apiClient, type ApiResponse } from '@/api/apiClient'
+import type { LoginPayload } from '@/zodValidations/authSchemas/loginSchema'
 import type { SignupPayload } from '@/zodValidations/authSchemas/signupSchema'
 
-export type AuthApiResponse<T = unknown> = {
-  success: boolean
-  message: string
-  data?: T
-  additionalInfo?: {
-    errors?: Array<{
-      path: string
-      message: string
-    }>
-  }
+export type AuthUser = {
+  id: string
+  email: string
+  username: string
+  name: string
+  role: string
+  accessToken: string
 }
 
-const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/auth`
-
-const apiClient = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-})
-
 export const signupApi = async (data: SignupPayload) => {
-  const response = await apiClient.post<AuthApiResponse>('/sign-up', data)
+  const response = await apiClient.post<ApiResponse>('/auth/sign-up', data)
+  return response.data
+}
+
+export const loginApi = async (data: LoginPayload) => {
+  const response = await apiClient.post<ApiResponse<AuthUser>>('/auth/login', data)
   return response.data
 }
