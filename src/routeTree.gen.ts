@@ -46,11 +46,12 @@ const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedProblemsSlugRoute = AuthenticatedProblemsSlugRouteImport.update({
-  id: '/problems/$slug',
-  path: '/problems/$slug',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
+const AuthenticatedProblemsSlugRoute =
+  AuthenticatedProblemsSlugRouteImport.update({
+    id: '/problems/$slug',
+    path: '/problems/$slug',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
@@ -80,9 +81,21 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/playground' | '/profile' | '/auth/login' | '/auth/signup' | '/problems/$slug'
+  fullPaths:
+    | '/'
+    | '/playground'
+    | '/profile'
+    | '/auth/login'
+    | '/auth/signup'
+    | '/problems/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/playground' | '/profile' | '/auth/login' | '/auth/signup' | '/' | '/problems/$slug'
+  to:
+    | '/playground'
+    | '/profile'
+    | '/auth/login'
+    | '/auth/signup'
+    | '/'
+    | '/problems/$slug'
   id:
     | '__root__'
     | '/_authenticated'
