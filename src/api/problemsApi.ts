@@ -27,7 +27,7 @@ export async function fetchProblems(
 /** GET /problems/:slug — published problem detail for the solve workspace. */
 export async function fetchProblemBySlug(slug: string): Promise<ProblemDetail | null> {
   try {
-    const response = await apiClient.get<ApiResponse<ProblemDetail>>(`/problems/${slug}/get`)
+    const response = await apiClient.get<ApiResponse<ProblemDetail>>(`/problems/get/${slug}`)
 
     if (!response.data.success || !response.data.data) {
       throw new Error(response.data.message || 'Failed to fetch problem')
