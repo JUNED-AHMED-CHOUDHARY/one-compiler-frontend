@@ -51,7 +51,7 @@ export type ProblemCodeTemplate = {
   user_visible_code: string
 }
 
-/** Lean list DTO — matches GET /problems/list `problems[]` (table + filters only). */
+/** Lean list DTO — matches GET /problems `problems[]` (table + filters only). */
 export type ProblemListItem = {
   id: string
   problem_name: string

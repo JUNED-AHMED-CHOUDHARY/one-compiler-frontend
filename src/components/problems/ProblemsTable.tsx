@@ -81,45 +81,45 @@ const SKELETON_CELLS = [
 
 type ProblemsTableProps = {
   problems: ProblemListItem[]
+  /** Global row index offset for paginated lists — defaults to 0 (page 1). */
+  rowOffset?: number
 }
 
-export function ProblemsTable({ problems }: ProblemsTableProps) {
+export function ProblemsTable({ problems, rowOffset = 0 }: ProblemsTableProps) {
   const navigate = useNavigate()
 
   return (
-    <Card className="gap-0 py-0">
-      <Table>
-        <TableHeader>
-          <TableRow className="hover:bg-transparent">
+    <Table>
+      <TableHeader>
+        <TableRow className="hover:bg-transparent">
+          {COLUMNS.map((column) => (
+            <TableHead key={column.id} className={column.headerClassName}>
+              {column.header}
+            </TableHead>
+          ))}
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {problems.map((problem, index) => (
+          <TableRow
+            key={problem.id}
+            className="cursor-pointer"
+            onClick={() =>
+              void navigate({
+                to: '/problems/$slug',
+                params: { slug: problem.problem_slug_name },
+              })
+            }
+          >
             {COLUMNS.map((column) => (
-              <TableHead key={column.id} className={column.headerClassName}>
-                {column.header}
-              </TableHead>
+              <TableCell key={column.id} className={column.cellClassName}>
+                {column.cell({ problem, index: index + rowOffset })}
+              </TableCell>
             ))}
           </TableRow>
-        </TableHeader>
-        <TableBody>
-          {problems.map((problem, index) => (
-            <TableRow
-              key={problem.id}
-              className="cursor-pointer"
-              onClick={() =>
-                void navigate({
-                  to: '/problems/$slug',
-                  params: { slug: problem.problem_slug_name },
-                })
-              }
-            >
-              {COLUMNS.map((column) => (
-                <TableCell key={column.id} className={column.cellClassName}>
-                  {column.cell({ problem, index })}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </Card>
+        ))}
+      </TableBody>
+    </Table>
   )
 }
 
