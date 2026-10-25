@@ -75,6 +75,43 @@ export type ProblemsListResponse = {
   pagination: ProblemsListPagination
 }
 
+/** Raw stdin input (one line per param) + its expected output. */
+export type SampleTestcase = {
+  input: string
+  expected: string
+}
+
+/** Problems.meta_data — `params` labels the testcase boxes, one stdin line each. */
+export type ProblemMetaData = {
+  params?: string[]
+  sample_testcases?: SampleTestcase[]
+}
+
+export type RunVerdict =
+  | 'ACCEPTED'
+  | 'WRONG_ANSWER'
+  | 'COMPILATION_ERROR'
+  | 'RUNTIME_ERROR'
+  | 'TIME_LIMIT_EXCEEDED'
+  | 'INVALID_TESTCASE'
+
+export type RunCaseResult = {
+  input: string
+  /** Whatever the solution printed while running this case. */
+  stdout: string
+  /** null when the case crashed / timed out / never ran. */
+  output: string | null
+  expected: string | null
+  passed: boolean
+}
+
+/** Result of a POST /problems/:problemId/run job, read via GET /code/result/:jobId. */
+export type ProblemRunResult = {
+  verdict: RunVerdict
+  error?: string
+  cases?: RunCaseResult[]
+}
+
 /** Detail DTO for solve page (future GET /problems/:slug). */
 export type ProblemDetail = {
   id: string
@@ -91,4 +128,5 @@ export type ProblemDetail = {
   tag_links: ProblemTagLink[]
   company_links: ProblemCompanyLink[]
   code_templates: ProblemCodeTemplate[]
+  meta_data: ProblemMetaData
 }

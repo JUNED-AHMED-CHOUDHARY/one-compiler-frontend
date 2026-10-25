@@ -1,4 +1,13 @@
-import type { ProblemDifficulty, ProgrammingLanguage } from '@/types/problem.types'
+import type { ProblemDifficulty, ProgrammingLanguage, RunVerdict } from '@/types/problem.types'
+
+const RUN_VERDICT_LABELS: Record<RunVerdict, string> = {
+  ACCEPTED: 'Accepted',
+  WRONG_ANSWER: 'Wrong Answer',
+  COMPILATION_ERROR: 'Compilation Error',
+  RUNTIME_ERROR: 'Runtime Error',
+  TIME_LIMIT_EXCEEDED: 'Time Limit Exceeded',
+  INVALID_TESTCASE: 'Invalid Testcase',
+}
 
 const DIFFICULTY_LABELS: Record<ProblemDifficulty, string> = {
   EASY: 'Easy',
@@ -47,6 +56,10 @@ export function formatMemoryLimit(memoryLimitKb: number) {
 
 export function formatTimeLimit(timeLimitMs: number) {
   return `${timeLimitMs} ms`
+}
+
+export function formatRunVerdict(verdict: RunVerdict) {
+  return RUN_VERDICT_LABELS[verdict]
 }
 
 export function formatEvaluationType(evaluationType: keyof typeof EVALUATION_LABELS) {

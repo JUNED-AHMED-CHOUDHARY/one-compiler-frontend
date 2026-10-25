@@ -3,11 +3,13 @@ import { AlertCircle, FileQuestion } from 'lucide-react'
 import { StatePanel } from '@/components/feedback/StatePanel'
 import { AppShell } from '@/components/layout/AppShell'
 import { ProblemEditorPanel } from '@/components/problems/ProblemEditorPanel'
+import { ProblemRunPanel } from '@/components/problems/ProblemRunPanel'
 import { ProblemStatementPanel } from '@/components/problems/ProblemStatementPanel'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useProblemBySlug } from '@/hooks/useProblemBySlug'
 import { useProblemEditor } from '@/hooks/useProblemEditor'
+import { useProblemRun } from '@/hooks/useProblemRun'
 import { getApiErrorMessage } from '@/lib/getApiErrorMessage'
 import type { ProblemDetail } from '@/types/problem.types'
 
@@ -75,6 +77,12 @@ function ProblemSolvePage() {
 
 function ProblemWorkspace({ problem }: { problem: ProblemDetail }) {
   const editor = useProblemEditor(problem.code_templates)
+  const run = useProblemRun(problem)
+
+  const handleRun = () => {
+    if (!editor.language) return
+    run.run(editor.language, editor.code)
+  }
 
   return (
     <AppShell variant="workspace" subtitle={problem.problem_name}>
@@ -86,6 +94,10 @@ function ProblemWorkspace({ problem }: { problem: ProblemDetail }) {
           code={editor.code}
           onLanguageChange={editor.selectLanguage}
           onCodeChange={editor.setCode}
+          onRun={handleRun}
+          isRunning={run.isRunning}
+          canRun={editor.hasTemplates && Boolean(editor.language)}
+          runPanel={<ProblemRunPanel params={problem.meta_data.params ?? []} run={run} />}
         />
       </div>
     </AppShell>
