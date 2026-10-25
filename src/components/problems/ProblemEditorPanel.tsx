@@ -1,7 +1,7 @@
 import Editor from '@monaco-editor/react'
-import { Play, Send, type LucideIcon } from 'lucide-react'
+import { Play, Send } from 'lucide-react'
 import { useTheme } from 'next-themes'
-import type { ComponentProps } from 'react'
+import type { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Select,
@@ -13,40 +13,17 @@ import {
 import { formatLanguageLabel, toMonacoLanguage } from '@/lib/problemFormatters'
 import type { ProblemCodeTemplate, ProgrammingLanguage } from '@/types/problem.types'
 
-type Action = {
-  id: string
-  label: string
-  icon: LucideIcon
-  variant: ComponentProps<typeof Button>['variant']
-  disabled?: boolean
-  title?: string
-}
-
-const EDITOR_ACTIONS: Action[] = [
-  {
-    id: 'run',
-    label: 'Run',
-    icon: Play,
-    variant: 'outline',
-    disabled: true,
-    title: 'Coming next',
-  },
-  {
-    id: 'submit',
-    label: 'Submit',
-    icon: Send,
-    variant: 'default',
-    disabled: true,
-    title: 'Coming next',
-  },
-]
-
 type ProblemEditorPanelProps = {
   templates: ProblemCodeTemplate[]
   language: ProgrammingLanguage | null
   code: string
   onLanguageChange: (language: ProgrammingLanguage) => void
   onCodeChange: (code: string) => void
+  onRun: () => void
+  isRunning: boolean
+  canRun: boolean
+  /** Testcases + results panel under the editor. */
+  runPanel: ReactNode
 }
 
 export function ProblemEditorPanel({
@@ -55,6 +32,10 @@ export function ProblemEditorPanel({
   code,
   onLanguageChange,
   onCodeChange,
+  onRun,
+  isRunning,
+  canRun,
+  runPanel,
 }: ProblemEditorPanelProps) {
   const { resolvedTheme } = useTheme()
   const hasTemplates = templates.length > 0
@@ -67,7 +48,7 @@ export function ProblemEditorPanel({
         <Select
           value={language ?? undefined}
           onValueChange={(value) => onLanguageChange(value as ProgrammingLanguage)}
-          disabled={!hasTemplates}
+          disabled={!hasTemplates || isRunning}
         >
           <SelectTrigger size="sm" className="w-40">
             <SelectValue placeholder="Language" />
@@ -82,19 +63,8 @@ export function ProblemEditorPanel({
         </Select>
 
         <div className="flex items-center gap-2">
-          {EDITOR_ACTIONS.map(({ id, label, icon: Icon, variant, disabled, title }) => (
-            <Button
-              key={id}
-              type="button"
-              variant={variant}
-              size="sm"
-              disabled={disabled}
-              title={title}
-            >
-              <Icon data-icon="inline-start" />
-              {label}
-            </Button>
-          ))}
+          <RunButton disabled={!canRun || isRunning} isRunning={isRunning} onClick={onRun} />
+          <SubmitButton />
         </div>
       </div>
 
@@ -113,6 +83,7 @@ export function ProblemEditorPanel({
               scrollBeyondLastLine: false,
               automaticLayout: true,
               tabSize: 2,
+              readOnly: isRunning,
             }}
           />
         ) : (
@@ -122,9 +93,33 @@ export function ProblemEditorPanel({
         )}
       </div>
 
-      <p className="text-muted-foreground border-t px-4 py-2.5 text-xs">
-        Run & Submit wire up next. Edits are kept per language on this page.
-      </p>
+      <div className="h-72 shrink-0 border-t lg:h-80">{runPanel}</div>
     </section>
+  )
+}
+
+function RunButton({
+  disabled,
+  isRunning,
+  onClick,
+}: {
+  disabled: boolean
+  isRunning: boolean
+  onClick: () => void
+}) {
+  return (
+    <Button type="button" variant="outline" size="sm" disabled={disabled} onClick={onClick}>
+      <Play data-icon="inline-start" />
+      {isRunning ? 'Running…' : 'Run'}
+    </Button>
+  )
+}
+
+function SubmitButton() {
+  return (
+    <Button type="button" variant="default" size="sm" disabled title="Coming next">
+      <Send data-icon="inline-start" />
+      Submit
+    </Button>
   )
 }

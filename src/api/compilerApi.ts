@@ -5,12 +5,12 @@ export interface RunResponse {
   jobId: string
 }
 
-export interface StatusResponse {
+/** The job's return value is spread onto the response — `{ output }` for playground runs. */
+export type StatusResponse<TResult = { output?: string }> = {
   jobId: string
   status: JobState
-  output?: string
   error?: string
-}
+} & Partial<TResult>
 
 export const submitCode = async (
   language: string,
@@ -21,7 +21,9 @@ export const submitCode = async (
   return response.data
 }
 
-export const checkJobStatus = async (jobId: string): Promise<StatusResponse> => {
-  const response = await apiClient.get<StatusResponse>(`/code/result/${jobId}`)
+export const checkJobStatus = async <TResult = { output?: string }>(
+  jobId: string,
+): Promise<StatusResponse<TResult>> => {
+  const response = await apiClient.get<StatusResponse<TResult>>(`/code/result/${jobId}`)
   return response.data
 }
